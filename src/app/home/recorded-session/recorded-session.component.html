@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Match Details
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="exportData()">
+        <ion-icon name="download"></ion-icon>
+        Export Data
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list *ngIf="sessionArray && sessionArray.length > 0">
+    <ion-item-group *ngFor="let session of sessionArray; let i = index">
+      <ion-item-divider class="divider-style">
+        <ion-label>Set - {{i}}</ion-label>
+      </ion-item-divider>
+      <ng-container *ngIf="session.length > 0">
+        <ng-container *ngFor="let details of session">
+          <ion-card>
+            <ion-card-content>
+              <ion-item>
+                <ion-label>Name</ion-label>
+                <ion-label>{{details.playerName}}</ion-label>
+              </ion-item>
+              <ion-item *ngIf="details.pointType">
+                <ion-label>pointType</ion-label>
+                <ion-label>{{details.pointType}}</ion-label>
+              </ion-item>
+              <ion-item *ngIf="details.pointSubType">
+                <ion-label>Point SubType</ion-label>
+                <ion-label>{{details.pointSubType}}</ion-label>
+              </ion-item>
+              <ion-item *ngIf="details.hand">
+                <ion-label>Hand</ion-label>
+                <ion-label>{{details.hand}}</ion-label>
+              </ion-item>
+              <ion-item *ngIf="details.quadrant">
+                <ion-label>Quadrant</ion-label>
+                <ion-label>{{details.quadrant}}</ion-label>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+        </ng-container>
+      </ng-container>
+
+    </ion-item-group>
+  </ion-list>
+</ion-content>

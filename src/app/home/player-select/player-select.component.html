@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Player Selection
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="center">
+    <div class="empty-class">
+      <ion-card>
+        <ion-item>
+          Player Details
+        </ion-item>
+
+        <ion-card-content>
+          <ion-grid [formGroup]="playerForm">
+            <div class="container-style"
+              *ngFor="let player of PlayerArrayForm.controls; let i = index"
+              >
+              <ion-row class="header-style" [ngClass]="{'active-header-style': selectedIndex === i}" (click)="selectToss(i)">
+                <ion-col class="content-centered">
+                  Player {{i + 1}}
+                  <ion-icon *ngIf="selectedIndex === i" name="checkmark-circle"></ion-icon>
+                </ion-col>
+               
+              </ion-row>
+              <ion-row [formGroup]="player">
+                <ion-col>
+                  <ion-list>
+                    <ion-item>
+                      <ion-label position="floating">Player Name</ion-label>
+                      <ion-input formControlName="playerName"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">Player Id(if any)</ion-label>
+                      <ion-input formControlName="playerId"></ion-input>
+                    </ion-item>
+                  </ion-list>
+                </ion-col>
+
+              </ion-row>
+            </div>
+          </ion-grid>
+
+          <div class="bottom-container">
+            <ion-button class="ion-text-center" color="primary" (click)="finalizePlayers()">Proceed</ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

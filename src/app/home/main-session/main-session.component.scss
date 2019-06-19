@@ -1,0 +1,64 @@
+.player-segment-container {
+    margin: 10px;
+}
+
+.action-container {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid grey;
+    background-color: lightgrey;
+}
+ 
+.bottom-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.box-style {
+    height: 10vh;
+    border: 1px solid lightgrey;
+}
+
+.selected-box-style {
+    height: 10vh;
+    background-color: darkseagreen;
+    border: 1px solid lightgrey;
+    color: white;
+}
+
+.center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+}
+
+ion-card {
+    width: 100vw;
+    height: 80vh;
+}
+
+.empty-class {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+    width: 100%;
+}
+
+ion-segment {
+    text-transform: none !important;
+    padding: 5px;
+}
+
+.shot-style {
+    text-transform: none !important;
+}

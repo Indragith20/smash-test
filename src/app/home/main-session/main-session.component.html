@@ -1,0 +1,109 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Main Session
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToRecordedSession()">
+          <ion-icon name="clipboard"></ion-icon>Details
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<div class="action-container">
+  <ion-buttons  slot="start" >
+      <ion-button color="success" (click)="startSession()" [disabled]="disableStartButton">
+          <ion-icon name="play-circle"></ion-icon>Start
+      </ion-button>
+  </ion-buttons>
+  <ion-text>Set {{matchService.numberOfSets}}</ion-text>
+  <ion-buttons slot="end">
+      <ion-button color="danger" (click)="endSession()" [disabled]="!disableStartButton">
+          <ion-icon name="close-circle"></ion-icon>End
+      </ion-button>
+  </ion-buttons>
+</div>
+<div class="action-container" *ngIf="playersList && playersList.length > 0">
+  <ion-text>{{playersList[0].playerName}}</ion-text>
+  <ion-chip>
+    <ion-label>{{pointDisplayDetails?.playerOne}} - {{pointDisplayDetails?.playerTwo}}</ion-label>
+  </ion-chip>
+  <ion-text>{{playersList[1].playerName}}</ion-text>
+</div>
+<ion-content>
+
+  <div class="center">
+    <div class="empty-class">
+      <ion-card>
+        <ion-card-content>
+          <div class="player-segment-container">
+            <ion-segment (ionChange)="changeSelectedPlayer($event)" mode="ios" [(ngModel)]="selectedPlayer">
+              <ion-segment-button *ngFor="let player of playersList" value="{{player.playerId}}">
+                <ion-label>{{player.playerName}}</ion-label>
+              </ion-segment-button>
+            </ion-segment>
+          </div>
+
+          <div>
+            <ion-segment (ionChange)="changeShotType($event)" mode="ios" [(ngModel)]="shotType">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4" *ngFor="let point of pointMainTypes">
+                  <ion-segment-button  value="{{point}}">
+                    <ion-label class="shot-style">{{point}}</ion-label>
+                  </ion-segment-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-segment>
+          </div>
+
+          <div class="point-container" *ngIf="showPointTypes">
+
+            <ion-grid>
+              <ion-row class="content-centered text-style">
+                <ion-text>Choose Point Type</ion-text>
+              </ion-row>
+              <ion-row>
+                <ion-col *ngFor="let ball of pointTypes" class="content-centered"
+                  [ngClass]="{'box-style': !ball.selected, 'selected-box-style': ball.selected}" size="6"
+                  (click)="selectBallType(ball)">
+                  {{ball.type}}
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+          <div class="point-container" *ngIf="showHandType">
+
+            <ion-grid>
+              <ion-row class="content-centered text-style">
+                <ion-text>Choose Quadrant</ion-text>
+              </ion-row>
+              <ion-row>
+                <ion-col *ngFor="let quadrant of quadrants" class="content-centered"
+                  [ngClass]="{'box-style': !quadrant.selected, 'selected-box-style': quadrant.selected}" size="6"
+                  (click)="selectQuadrant(quadrant)">
+                  {{quadrant.quadrant}}
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+          <div class="player-segment-container" *ngIf="showHandType">
+            <ion-segment (ionChange)="changeHandType($event)" mode="ios">
+              <ion-segment-button *ngFor="let hand of handTypes" value="{{hand}}">
+                <ion-label>{{hand}}</ion-label>
+              </ion-segment-button>
+            </ion-segment>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <div class="bottom-container">
+    <ion-button (click)="recordAction()" color="warning" [disabled]="!this.selectedPlayer">Record Action</ion-button>
+  </div>
+</ion-footer>

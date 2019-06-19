@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Match Selection
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="center">
+    <div class="empty-class">
+      <ion-card>
+        <ion-item>
+          Match Details
+        </ion-item>
+
+        <ion-card-content>
+          <ion-item>
+            <ion-label position="floating">Enter Match ID</ion-label>
+            <ion-input [(ngModel)]="matchId"></ion-input>
+          </ion-item>
+          <div class="bottom-container">
+            <ion-button class="ion-text-center" color="primary" (click)="saveMatchData()"
+              [disabled]="!matchId">Proceed</ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

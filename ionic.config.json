@@ -1,0 +1,7 @@
+{
+  "name": "smashhit",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
