@@ -15,7 +15,7 @@
   <ion-list *ngIf="sessionArray && sessionArray.length > 0">
     <ion-item-group *ngFor="let session of sessionArray; let i = index">
       <ion-item-divider class="divider-style">
-        <ion-label>Set - {{i}}</ion-label>
+        <ion-label>Set - {{i + 1}}</ion-label>
       </ion-item-divider>
       <ng-container *ngIf="session.length > 0">
         <ng-container *ngFor="let details of session">

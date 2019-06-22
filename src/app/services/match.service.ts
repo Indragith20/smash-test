@@ -3,6 +3,8 @@ import { IMatchInterface, IMainMatchDetails, IPlayerDetails, IToss, IAction, ISe
 import { Storage } from '@ionic/storage';
 import { v4 as uuid } from 'uuid';
 import { SHOTTYPE } from '../constants/shotypes';
+import { WINNINGPOINTTYPE, SERVICEERRORPOINTTYPE, UNFORCEDERRORPOINTTYPE } from '../constants/pointtype';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class MatchService {
@@ -11,7 +13,7 @@ export class MatchService {
     numberOfSets: number = 0;
     teamOnePoints: number = 0;
     teamTwoPoints: number = 0;
-    constructor(private storage: Storage) {
+    constructor(private storage: Storage, private http: HttpClient) {
     }
 
     saveToStorage(matchId) {
@@ -31,7 +33,22 @@ export class MatchService {
                         [sessionKey]: {
                             winningShots: 0,
                             serviceError: 0,
-                            unForcedError: 0
+                            unforcedError: 0,
+                            winningShotTypes: {
+                                smash: 0,
+                                drop: 0,
+                                floater: 0,
+                                serve: 0
+                            },
+                            serviceErrorTypes: {
+                                net: 0,
+                                foulServe: 0
+                            },
+                            unforcedErrorTypes: {
+                                sideAway: 0,
+                                longAway: 0,
+                                net: 0
+                            }
                         }
                     }
                 };
@@ -43,7 +60,8 @@ export class MatchService {
                                 ...pointDetails[player.playerId],
                                 [sessionKey]: {
                                     ...pointDetails[player.playerId][sessionKey],
-                                    winningShots: pointDetails[player.playerId][sessionKey].winningShots > -1 ? pointDetails[player.playerId][sessionKey].winningShots + 1 : 1
+                                    winningShots: pointDetails[player.playerId][sessionKey].winningShots > -1 ? pointDetails[player.playerId][sessionKey].winningShots + 1 : 1,
+                                    winningShotTypes: this.getUpdatedWinningShotTypes(pointDetails[player.playerId][sessionKey].winningShotTypes, session.pointSubType, session.quadrant)
                                 }
                             }
                             break;
@@ -53,7 +71,8 @@ export class MatchService {
                                 ...pointDetails[player.playerId],
                                 [sessionKey]: {
                                     ...pointDetails[player.playerId][sessionKey],
-                                    serviceError: pointDetails[player.playerId][sessionKey].serviceError > -1 ? pointDetails[player.playerId][sessionKey].serviceError + 1 : 1
+                                    serviceError: pointDetails[player.playerId][sessionKey].serviceError > -1 ? pointDetails[player.playerId][sessionKey].serviceError + 1 : 1,
+                                    serviceErrorTypes: this.getUpdatedServiceErrorTypes(pointDetails[player.playerId][sessionKey].winningShotTypes, session.pointSubType)
                                 }
                             }
                             break;
@@ -63,7 +82,8 @@ export class MatchService {
                                 ...pointDetails[player.playerId],
                                 [sessionKey]: {
                                     ...pointDetails[player.playerId][sessionKey],
-                                    unforcedError: pointDetails[player.playerId][sessionKey].unforcedError > -1 ? pointDetails[player.playerId][sessionKey].unforcedError + 1 : 1
+                                    unforcedError: pointDetails[player.playerId][sessionKey].unforcedError > -1 ? pointDetails[player.playerId][sessionKey].unforcedError + 1 : 1,
+                                    unforcedErrorTypes: this.getUpdatedUnforcedErrorTypes(pointDetails[player.playerId][sessionKey].winningShotTypes, session.pointSubType)
                                 }
                             }
                             break;
@@ -78,15 +98,106 @@ export class MatchService {
         this.matchDetails = { ...this.matchDetails, [matchId]: { ...this.matchDetails[matchId], pointDetails } };
     }
 
+    getUpdatedQuadrant(currentQuadrant, quadrant) {
+        let updated = {};
+        switch (String(quadrant)) {
+            case '1':
+                updated = { ...currentQuadrant, quadrant1: currentQuadrant.quadrant1 + 1 }
+                break;
+            case '2':
+                updated = { ...currentQuadrant, quadrant2: currentQuadrant.quadrant2 + 1 }
+                break;
+            case '3':
+                updated = { ...currentQuadrant, quadrant3: currentQuadrant.quadrant3 + 1 }
+                break;
+            case '4':
+                updated = { ...currentQuadrant, quadrant4: currentQuadrant.quadrant4 + 1 }
+                break;
+            default:
+                break;
+        }
+        return updated;
+    }
+
+    /* getUpdatedWinningShotTypes(currentValue, pointSubType, quadrant = 0) {
+        let updated = { };
+        switch(pointSubType) {
+            case WINNINGPOINTTYPE.SMASH:
+                currentValue.smashQuadrant;
+                updated = {...currentValue, smash: currentValue.smash + 1, smashQuadrant: this.getUpdatedQuadrant(currentValue.smashQuadrant, quadrant) };
+                break;
+            case WINNINGPOINTTYPE.DROP:
+                updated = {...currentValue, drop: currentValue.drop + 1, dropQuadrant: this.getUpdatedQuadrant(currentValue.dropQuadrant, quadrant)};
+                break;
+            case WINNINGPOINTTYPE.FLOATER:
+                updated = {...currentValue, floater: currentValue.floater + 1, floaterQuadrant: this.getUpdatedQuadrant(currentValue.floaterQuadrant, quadrant)};
+                break;
+            case WINNINGPOINTTYPE.SERVE:
+                updated = {...currentValue, serve: currentValue.serve + 1, serveQuadrant: this.getUpdatedQuadrant(currentValue.serveQuadrant, quadrant) };
+                break;
+        }
+        return updated;
+    } */
+
+    getUpdatedWinningShotTypes(currentValue, pointSubType, quadrant = 0) {
+        let updated = { };
+        switch(pointSubType) {
+            case WINNINGPOINTTYPE.SMASH:
+                currentValue.smashQuadrant;
+                updated = {...currentValue, smash: currentValue.smash + 1 };
+                break;
+            case WINNINGPOINTTYPE.DROP:
+                updated = {...currentValue, drop: currentValue.drop + 1};
+                break;
+            case WINNINGPOINTTYPE.FLOATER:
+                updated = {...currentValue, floater: currentValue.floater + 1};
+                break;
+            case WINNINGPOINTTYPE.SERVE:
+                updated = {...currentValue, serve: currentValue.serve + 1};
+                break;
+        }
+        return updated;
+    }
+
+    getUpdatedServiceErrorTypes(currentValue, pointSubType) {
+        let updated = { };
+        switch(pointSubType) {
+            case SERVICEERRORPOINTTYPE.FOULSERVE:
+                updated = {...currentValue, foulServe: currentValue.foulServe + 1 };
+                break;
+            case SERVICEERRORPOINTTYPE.NET:
+                updated = {...currentValue, net: currentValue.net + 1 };
+                break;
+        }
+        return updated;
+    }
+
+    getUpdatedUnforcedErrorTypes(currentValue, pointSubType) {
+        let updated = { };
+        switch(pointSubType) {
+            case UNFORCEDERRORPOINTTYPE.LONGAWAY:
+                updated = {...currentValue, longAway: currentValue.longAway + 1 };
+                break;
+            case UNFORCEDERRORPOINTTYPE.NET:
+                updated = {...currentValue, net: currentValue.net + 1 };
+                break;
+            case UNFORCEDERRORPOINTTYPE.SIDEAWAY: 
+                updated = { ...currentValue, sideAway: currentValue.sideAway + 1 };
+        }
+        return updated;
+    }
+
     getUpdatedPointDetails(matchId, playerOneId, playerTwoId, sessionId) {
         this.getPointDetails(matchId);
+        console.log(this.matchDetails[matchId].pointDetails[playerOneId][sessionId]);
+        console.log(this.matchDetails[matchId].pointDetails[playerTwoId][sessionId]);
         let playerPointDetails = {
-            playerOne: this.matchDetails[matchId].pointDetails[playerOneId][sessionId].winningShots + 
-                        this.matchDetails[matchId].pointDetails[playerTwoId][sessionId].serviceError + 
-                        this.matchDetails[matchId].pointDetails[playerTwoId][sessionId].unforcedError,
-            playerTwo: this.matchDetails[matchId].pointDetails[playerTwoId][sessionId].winningShots + 
-                        this.matchDetails[matchId].pointDetails[playerOneId][sessionId].serviceError + 
-                        this.matchDetails[matchId].pointDetails[playerOneId][sessionId].unforcedError
+            playerOne: Number(this.matchDetails[matchId].pointDetails[playerOneId][sessionId].winningShots) + 
+                        Number(this.matchDetails[matchId].pointDetails[playerTwoId][sessionId].serviceError) + 
+                        Number(this.matchDetails[matchId].pointDetails[playerTwoId][sessionId].unforcedError),
+            playerTwo: Number(this.matchDetails[matchId].pointDetails[playerTwoId][sessionId].winningShots) + 
+                        Number(this.matchDetails[matchId].pointDetails[playerOneId][sessionId].serviceError) +
+                        Number(this.matchDetails[matchId].pointDetails[playerOneId][sessionId].unforcedError)
         };
         return playerPointDetails;
     }
@@ -157,6 +268,78 @@ export class MatchService {
         };
         this.saveToStorage(matchId);
         return generatedKey;
+    }
+
+    formatData(matchDetails: IMatchInterface) {
+        const sampleArray = [];
+        matchDetails.players.forEach((player) => {
+            sampleArray.push([player.playerName]);
+            let setArray = [];
+            let smashArray = ['Smash'];
+            let dropArray = ['Drop'];
+            let floaterArray = ['Floater'];
+            let winningServeArray = ['Serve'];
+            let serviceNetArray = ['Net'];
+            let serviceFoulServeArray = ['Foul Serve'];
+            let sideAwayArray = ['Side Away'];
+            let longAwayArray = ['Long Away'];
+            let netArray = ['Net'];
+            let smashCountArray = [];
+            Object.keys(matchDetails.pointDetails[player.playerId]).map((sessionKey, index) => {
+                let session = matchDetails.pointDetails[player.playerId][sessionKey];
+                setArray.push(`Set ${index + 1}`);
+                smashArray.push(String(session.winningShotTypes.smash));
+                dropArray.push(String(session.winningShotTypes.drop));
+                floaterArray.push(String(session.winningShotTypes.floater));
+                winningServeArray.push(String(session.winningShotTypes.serve));
+                serviceNetArray.push(String(session.serviceErrorTypes.net));
+                serviceFoulServeArray.push(String(session.serviceErrorTypes.foulServe));
+                sideAwayArray.push(String(session.unforcedErrorTypes.sideAway));
+                longAwayArray.push(String(session.unforcedErrorTypes.longAway));
+                netArray.push(String(session.unforcedErrorTypes.net));
+                /* if(session.winningShotTypes)
+                Object.keys(session.winningShotTypes.smashQuadrant) */
+            })
+            /* sampleArray.push(setArray); */
+            let winningShotArray = ['Winning Shots'];
+            sampleArray.push(winningShotArray.concat(setArray));
+            sampleArray.push(smashArray);
+            sampleArray.push(dropArray);
+            sampleArray.push(floaterArray);
+            sampleArray.push(winningServeArray);
+            sampleArray.push([]);
+            let serviceErrorArray = ['Service Error'];
+            sampleArray.push(serviceErrorArray.concat(setArray));
+            sampleArray.push(serviceNetArray);
+            sampleArray.push(serviceFoulServeArray);
+            sampleArray.push([]);
+            let unforcedErrorArray = ['UnForced Error'];
+            sampleArray.push(unforcedErrorArray.concat(setArray));
+            sampleArray.push(sideAwayArray);
+            sampleArray.push(longAwayArray);
+            sampleArray.push(netArray);
+            sampleArray.push([]);
+        })
+        console.log(sampleArray);
+        return sampleArray;
+    }
+
+    exportAsExcel(matchId: string) {
+        const content = this.formatData(this.matchDetails[matchId]);
+        /* const content = [
+            ["Item", "Cost", "Stocked", "Ship Date"],
+            ["Wheel", "$20.50", "4", "3/1/2016"],
+            ["Door", "$15", "2", "3/15/2016"],
+            ["Engine", "$100", "1", "30/20/2016"],
+            ["Totals", "=SUM(B2:B4)", "=SUM(C2:C4)", "=MAX(D2:D4)"]
+        ]; */
+        // this.http.post('http://localhost:8080/', { title: matchId, content: JSON.stringify(content)}).subscribe((data) => {
+        //     console.log(data);
+        // })
+
+        this.http.post('https://frozen-sea-76181.herokuapp.com/', { title: matchId, content: JSON.stringify(content)}).subscribe((data) => {
+            console.log(data);
+        })
     }
 
     saveAction(matchId: string, recordedAction: IAction, generatedKey: string) {

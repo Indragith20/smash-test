@@ -37,6 +37,7 @@ export class RecordedSessionComponent implements OnInit, OnDestroy {
   }
 
   exportData() {
+    this.matchService.exportAsExcel(this.selectedMatch);
   }
 
   ngOnDestroy() {

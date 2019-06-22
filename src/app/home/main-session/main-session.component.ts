@@ -193,6 +193,7 @@ export class MainSessionComponent implements OnInit {
   startSession() {
     this.disableStartButton = true;
     this.generatedKey = this.matchService.startSet(this.selectedMatch);
+    this.pointDisplayDetails = this.matchService.getUpdatedPointDetails(this.selectedMatch, this.playersList[0].playerId, this.playersList[1].playerId, this.generatedKey);
   }
 
   endSession() {

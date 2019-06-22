@@ -10,6 +10,7 @@
     align-items: center;
     border-bottom: 1px solid grey;
     background-color: lightgrey;
+    margin-bottom: 10px;
 }
  
 .bottom-container {
@@ -31,14 +32,14 @@
     color: white;
 }
 
-.center {
+/* .center {
     position: fixed;
     top: 50%;
     left: 50%;
     width: 100%;
     transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
-}
+} */
 
 ion-card {
     width: 100vw;
@@ -61,4 +62,9 @@ ion-segment {
 
 .shot-style {
     text-transform: none !important;
+}
+
+.center-element {
+    display: flex;
+    flex-direction: column;
 }

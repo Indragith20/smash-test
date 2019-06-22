@@ -18,7 +18,39 @@ export interface ISetDetails {
         serviceError: number;
         unforcedError: number;
         totalPoints: number;
+        winningShotTypes: IWinningShotTypes;
+        serviceErrorTypes: IServiceErrorTypes;
+        unforcedErrorTypes: IUnforcedErrorTypes;
     }
+}
+
+export interface IWinningShotTypes {
+    smash: number;
+    drop: number;
+    floater: number;
+    serve: number;
+    smashQuadrant: IQuadrantTypes;
+    dropQuadrant: IQuadrantTypes;
+    floaterQuadrant: IQuadrantTypes;
+    serveQuadrant: IQuadrantTypes;
+}
+
+export interface IQuadrantTypes {
+    quadrant1: number;
+    quadrant2: number;
+    quadrant3: number;
+    quadrant4: number;
+}
+
+export interface IServiceErrorTypes {
+    net: number;
+    foulServe: number;
+}
+
+export interface IUnforcedErrorTypes {
+    sideAway: number;
+    longAway: number;
+    net: number;
 }
 
 export interface IPlayerDetails {
