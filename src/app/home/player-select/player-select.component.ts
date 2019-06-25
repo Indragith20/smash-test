@@ -56,18 +56,18 @@ export class PlayerSelectComponent implements OnInit {
   finalizePlayers() {
     console.log(this.playerForm.value);
     const playerDetails = this.playerForm.get('players').value;
-    if(this.selectedIndex !== -1 && this.selectedAction) {
-      const modifiedToss: IToss = {
+    if(playerDetails && playerDetails.length > 0) {
+      /* const modifiedToss: IToss = {
         wonby: playerDetails[this.selectedIndex].playerId,
         choosenAction: this.selectedAction
-      }
+      } */
       const modifiedPlayerList = playerDetails.map((player) => {
         if(!player.playerId) {
           return { ...player, playerId: uuid()}
         }
         return player;
       })
-      this.matchService.savePlayersList(modifiedPlayerList, this.selectedMatch, modifiedToss);
+      this.matchService.savePlayersList(modifiedPlayerList, this.selectedMatch);
       this.goToStartSession();
     } else {
       this.presentCommonAlert();
@@ -82,7 +82,7 @@ export class PlayerSelectComponent implements OnInit {
   }
 
   goToStartSession() {
-    this.router.navigate(['home/main-session/' + this.selectedMatch]);
+    this.router.navigate(['home/set-details/' + this.selectedMatch]);
   }
 
    async presentAlertRadio() {

@@ -221,7 +221,7 @@ export class MatchService {
         this.saveToStorage(matchId);
     }
 
-    savePlayersList(players: IPlayerDetails[], matchId: string, tossDetails: IToss) {
+    savePlayersList(players: IPlayerDetails[], matchId: string) {
         console.log(this.matchDetails);
         this.matchDetails = {
             ...this.matchDetails,
@@ -230,7 +230,7 @@ export class MatchService {
                 players: [...players]
             }
         };
-        if (tossDetails) {
+        /* if (tossDetails) {
             this.matchDetails = {
                 ...this.matchDetails,
                 [matchId]: {
@@ -238,7 +238,7 @@ export class MatchService {
                     toss: tossDetails
                 }
             }
-        }
+        } */
         const currentMatchDetails: IMatchInterface = { ...this.matchDetails[matchId] };
         const modifiedMatchDetails = { ...currentMatchDetails, pointDetails: {} };
         console.log(modifiedMatchDetails);
@@ -250,6 +250,17 @@ export class MatchService {
             }
         }
         console.log(this.matchDetails);
+        this.saveToStorage(matchId);
+    }
+
+    saveTossDetails(matchId: string, tossDetails: IToss) {
+        this.matchDetails = {
+            ...this.matchDetails,
+            [matchId]: {
+                ...this.matchDetails[matchId],
+                toss: tossDetails
+            }
+        }
         this.saveToStorage(matchId);
     }
 
@@ -357,5 +368,17 @@ export class MatchService {
         };
         console.log(this.matchDetails);
         this.saveToStorage(matchId);
+    }
+
+    undoAction(matchId: string, sessionKey: string): boolean {
+        if(this.matchDetails[matchId].session[sessionKey] && this.matchDetails[matchId].session[sessionKey].length > 0) {
+            const exisitingSession = this.matchDetails[matchId].session[sessionKey];
+            const exisitingSessionLength = exisitingSession.length;
+            this.matchDetails[matchId].session[sessionKey].splice(exisitingSessionLength-1, 1);
+            this.saveToStorage(matchId);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

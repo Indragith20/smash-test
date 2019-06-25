@@ -18,10 +18,9 @@
             <div class="container-style"
               *ngFor="let player of PlayerArrayForm.controls; let i = index"
               >
-              <ion-row class="header-style" [ngClass]="{'active-header-style': selectedIndex === i}" (click)="selectToss(i)">
+              <ion-row class="header-style">
                 <ion-col class="content-centered">
                   Player {{i + 1}}
-                  <ion-icon *ngIf="selectedIndex === i" name="checkmark-circle"></ion-icon>
                 </ion-col>
                
               </ion-row>

@@ -61,6 +61,8 @@ export interface IPlayerDetails {
 export interface IToss {
     wonby: string;
     choosenAction: string;
+    numberOfSets: string;
+    setPoints: string;
 }
 
 export interface ISession {

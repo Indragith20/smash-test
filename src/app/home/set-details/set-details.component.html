@@ -1,0 +1,56 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-title>
+        Set Selection
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <div class="center">
+      <div class="empty-class">
+        <ion-card>
+          <ion-item>
+            Set Details
+          </ion-item>
+  
+          <ion-card-content>
+            <ion-item>
+                <ion-label>Toss Won By</ion-label>
+                <ion-select placeholder="Select One" [(ngModel)]="selectedPlayer">
+                    <ion-select-option *ngFor="let player of playersList" value="{{player.playerId}}">
+                      <ion-label>{{player.playerName}}</ion-label>
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label>Choosen Action</ion-label>
+                <ion-select placeholder="Select One" [(ngModel)]="selectedAction">
+                  <ion-select-option value="serve">Serve</ion-select-option>
+                  <ion-select-option value="side">Side</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label>Number of Sets</ion-label>
+                <ion-select placeholder="Select One" [(ngModel)]="numberOfSets">
+                  <ion-select-option value="3">3</ion-select-option>
+                  <ion-select-option value="5">5</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label>Set Points</ion-label>
+                <ion-select placeholder="Select One" [(ngModel)]="setPoints">
+                    <ion-select-option value="15">15</ion-select-option>
+                    <ion-select-option value="21">21</ion-select-option>
+                    <ion-select-option value="30">30</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <div class="bottom-container">
+              <ion-button class="ion-text-center" color="primary" (click)="saveTossDetails()"
+                [disabled]="!selectedPlayer || !selectedAction">
+                <ion-ripple-effect></ion-ripple-effect>Proceed</ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+  </ion-content>

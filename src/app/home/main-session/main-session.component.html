@@ -23,7 +23,8 @@
     </ion-button>
   </ion-buttons>
 </div>
-<div class="action-container" *ngIf="playersList && playersList.length > 0">
+<div class="action-container" [ngClass]="{'active-session': disableStartButton, 'hold-session': !disableStartButton}" 
+  *ngIf="playersList && playersList.length > 0">
   <ion-text>{{playersList[0].playerName}}</ion-text>
   <ion-chip>
     <ion-label>{{pointDisplayDetails?.playerOne}} - {{pointDisplayDetails?.playerTwo}}</ion-label>
@@ -56,7 +57,13 @@
               </ion-grid>
             </ion-segment>
           </div>
-
+          <div class="player-segment-container" *ngIf="showHandType">
+            <ion-segment (ionChange)="changeHandType($event)" mode="ios">
+              <ion-segment-button *ngFor="let hand of handTypes" value="{{hand}}">
+                <ion-label>{{hand}}</ion-label>
+              </ion-segment-button>
+            </ion-segment>
+          </div>
           <div class="point-container" *ngIf="showPointTypes">
 
             <ion-grid>
@@ -87,13 +94,6 @@
               </ion-row>
             </ion-grid>
           </div>
-          <div class="player-segment-container" *ngIf="showHandType">
-            <ion-segment (ionChange)="changeHandType($event)" mode="ios">
-              <ion-segment-button *ngFor="let hand of handTypes" value="{{hand}}">
-                <ion-label>{{hand}}</ion-label>
-              </ion-segment-button>
-            </ion-segment>
-          </div>
         </ion-card-content>
       </ion-card>
 
@@ -102,6 +102,15 @@
 
 <ion-footer>
   <div class="bottom-container">
-    <ion-button (click)="recordAction()" color="warning" [disabled]="!this.selectedPlayer">Record Action</ion-button>
+    <ion-button size="small" color="light" (click)="undoLastAction()">
+      <ion-icon name="undo"></ion-icon>
+      Undo
+    </ion-button>
+    <ion-button (click)="recordAction()" color="warning" [disabled]="!this.selectedPlayer">
+        <ion-ripple-effect></ion-ripple-effect>Record Action
+    </ion-button>
+    <ion-button size="small" color="dark">
+       Finish
+    </ion-button>
   </div>
 </ion-footer>

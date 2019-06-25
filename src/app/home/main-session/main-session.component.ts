@@ -129,16 +129,14 @@ export class MainSessionComponent implements OnInit {
   }
 
   recordAction() {
-    this.playersList.map((player) => {
-      if(player.playerId === this.selectedPlayer) {
-        console.log('match found')
-      } 
-    });
+    const anotherPlayer = this.playersList.find((player) => player.playerId !== this.selectedPlayer);
     const identifiedPlayer = this.playersList.find(player => player.playerId == this.selectedPlayer);
-    if(identifiedPlayer && this.generatedKey) {
+    const playerTobeMapped = this.shotType === 'Winning Shot' ? identifiedPlayer : anotherPlayer;
+    console.log(playerTobeMapped);
+    if(playerTobeMapped && this.generatedKey) {
       const recordedAction: IAction = {
-        playerId: this.selectedPlayer,
-        playerName: identifiedPlayer.playerName,
+        playerId: playerTobeMapped.playerId,
+        playerName: playerTobeMapped.playerName,
         pointType: this.shotType,
         pointSubType: this.selectedPointType,
         hand: this.selectedHandType,
@@ -146,7 +144,7 @@ export class MainSessionComponent implements OnInit {
         timestamp: new Date().toDateString()
       };
       this.matchService.saveAction(this.selectedMatch, recordedAction, this.generatedKey);
-      this.presentToast().then(() => {
+      this.presentToast('Action Has been Recorded..').then(() => {
         this.pointDisplayDetails = this.matchService.getUpdatedPointDetails(this.selectedMatch, this.playersList[0].playerId, this.playersList[1].playerId, this.generatedKey);
       });
     } else {
@@ -165,9 +163,9 @@ export class MainSessionComponent implements OnInit {
     this.showHandType = false;
   }
 
-  async presentToast() {
+  async presentToast(message: string) {
     const toast = await this.toastController.create({
-      message: 'Your settings have been saved.',
+      message: message,
       duration: 2000
     });
     toast.present();
@@ -194,10 +192,22 @@ export class MainSessionComponent implements OnInit {
     this.disableStartButton = true;
     this.generatedKey = this.matchService.startSet(this.selectedMatch);
     this.pointDisplayDetails = this.matchService.getUpdatedPointDetails(this.selectedMatch, this.playersList[0].playerId, this.playersList[1].playerId, this.generatedKey);
+    this.presentToast('Session Started');
   }
 
   endSession() {
     this.disableStartButton = false;
+    this.presentToast('Session Ended');
+  }
+
+  undoLastAction() {
+    const isDone = this.matchService.undoAction(this.selectedMatch, this.generatedKey);
+    if(isDone) {
+      this.presentToast('Undo Success');
+      this.pointDisplayDetails = this.matchService.getUpdatedPointDetails(this.selectedMatch, this.playersList[0].playerId, this.playersList[1].playerId, this.generatedKey);
+    } else {
+      this.presentToast('No Action Present')
+    }
   }
 
   goToRecordedSession() {

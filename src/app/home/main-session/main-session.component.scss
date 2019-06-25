@@ -15,7 +15,7 @@
  
 .bottom-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     margin-top: 10px;
 }
@@ -67,4 +67,14 @@ ion-segment {
 .center-element {
     display: flex;
     flex-direction: column;
+}
+
+.active-session {
+    background-color: #60a160;
+    color: white;
+}
+
+.hold-session {
+    background-color: goldenrod;
+    color: black;
 }

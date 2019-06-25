@@ -12,6 +12,7 @@ import { MatchService } from '../services/match.service';
 import { RecordedSessionComponent } from './recorded-session/recorded-session.component';
 
 import { IonicStorageModule } from '@ionic/storage';
+import { SetDetailsComponent } from './set-details/set-details.component';
 
 @NgModule({
   imports: [
@@ -31,6 +32,9 @@ import { IonicStorageModule } from '@ionic/storage';
           path: 'match-select',
           component: MatchSelectComponent
         }, {
+          path: 'set-details/:matchId',
+          component: SetDetailsComponent
+        }, {
           path: 'main-session/:matchId',
           component: MainSessionComponent
         }, {
@@ -49,6 +53,7 @@ import { IonicStorageModule } from '@ionic/storage';
     HomePage,
     MatchSelectComponent,
     PlayerSelectComponent,
+    SetDetailsComponent,
     MainSessionComponent,
     RecordedSessionComponent
   ],
