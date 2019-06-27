@@ -38,7 +38,31 @@ export class MatchService {
                                 smash: 0,
                                 drop: 0,
                                 floater: 0,
-                                serve: 0
+                                serve: 0,
+                                smashQuadrant: {
+                                    quadrant1: 0,
+                                    quadrant2: 0,
+                                    quadrant3: 0,
+                                    quadrant4: 0,
+                                },
+                                dropQuadrant: {
+                                    quadrant1: 0,
+                                    quadrant2: 0,
+                                    quadrant3: 0,
+                                    quadrant4: 0,
+                                },
+                                floaterQuadrant: {
+                                    quadrant1: 0,
+                                    quadrant2: 0,
+                                    quadrant3: 0,
+                                    quadrant4: 0,
+                                },
+                                serveQuadrant: {
+                                    quadrant1: 0,
+                                    quadrant2: 0,
+                                    quadrant3: 0,
+                                    quadrant4: 0,
+                                }
                             },
                             serviceErrorTypes: {
                                 net: 0,
@@ -119,11 +143,11 @@ export class MatchService {
         return updated;
     }
 
-    /* getUpdatedWinningShotTypes(currentValue, pointSubType, quadrant = 0) {
+    getUpdatedWinningShotTypes(currentValue, pointSubType, quadrant = 0) {
         let updated = { };
         switch(pointSubType) {
             case WINNINGPOINTTYPE.SMASH:
-                currentValue.smashQuadrant;
+                //currentValue.smashQuadrant;
                 updated = {...currentValue, smash: currentValue.smash + 1, smashQuadrant: this.getUpdatedQuadrant(currentValue.smashQuadrant, quadrant) };
                 break;
             case WINNINGPOINTTYPE.DROP:
@@ -137,9 +161,9 @@ export class MatchService {
                 break;
         }
         return updated;
-    } */
+    }
 
-    getUpdatedWinningShotTypes(currentValue, pointSubType, quadrant = 0) {
+    /* getUpdatedWinningShotTypes(currentValue, pointSubType, quadrant = 0) {
         let updated = { };
         switch(pointSubType) {
             case WINNINGPOINTTYPE.SMASH:
@@ -157,7 +181,7 @@ export class MatchService {
                 break;
         }
         return updated;
-    }
+    } */
 
     getUpdatedServiceErrorTypes(currentValue, pointSubType) {
         let updated = { };
@@ -295,7 +319,15 @@ export class MatchService {
             let sideAwayArray = ['Side Away'];
             let longAwayArray = ['Long Away'];
             let netArray = ['Net'];
-            let smashCountArray = [];
+            /* let smashQuadrantOneArray = ['Quadrant 1'];
+            let smashQuadrantTwoArray = ['Quadrant 2'];
+            let smashQuadrantThreeArray = ['Quadrant 3'];
+            let smashQuadrantFourArray = ['Quadrant 4'];
+            smashArr = [smash , 10, 11 ,12, 13] */
+            let smashQuadrantArray = ['smash', 0, 0, 0, 0];
+            let dropQuadrantArray = ['drop', 0, 0, 0, 0];
+            let floaterQuadrantArray = ['floater', 0, 0, 0, 0];
+            let serveQuadrantArray = ['serve', 0, 0, 0, 0];
             Object.keys(matchDetails.pointDetails[player.playerId]).map((sessionKey, index) => {
                 let session = matchDetails.pointDetails[player.playerId][sessionKey];
                 setArray.push(`Set ${index + 1}`);
@@ -308,8 +340,46 @@ export class MatchService {
                 sideAwayArray.push(String(session.unforcedErrorTypes.sideAway));
                 longAwayArray.push(String(session.unforcedErrorTypes.longAway));
                 netArray.push(String(session.unforcedErrorTypes.net));
-                /* if(session.winningShotTypes)
-                Object.keys(session.winningShotTypes.smashQuadrant) */
+                if(session.winningShotTypes) {
+                    Object.keys(session.winningShotTypes).forEach((shotType) => {
+                        switch(shotType) {
+                            case 'smashQuadrant': {
+                                smashQuadrantArray.forEach((shotcount, index) => {
+                                    if(index !== 0) {
+                                        smashQuadrantArray[index] = Number(smashQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
+                                    }
+                                });
+                                break;
+                            }
+                            case 'dropQuadrant': {
+                                dropQuadrantArray.forEach((shotcount, index) => {
+                                    if(index !== 0) {
+                                        dropQuadrantArray[index] = Number(dropQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
+                                    }
+                                });
+                                break;
+                            }
+                            case 'floaterQuadrant': {
+                                floaterQuadrantArray.forEach((shotcount, index) => {
+                                    if(index !== 0) {
+                                        floaterQuadrantArray[index] = Number(floaterQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
+                                    }
+                                });
+                                break;
+                            }
+                            case 'serveQuadrant': {
+                                serveQuadrantArray.forEach((shotcount, index) => {
+                                    if(index !== 0) {
+                                        serveQuadrantArray[index] = Number(serveQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
+                                    }
+                                });
+                                break;
+                            }
+                        }
+                    })
+                }
+                
+                
             })
             /* sampleArray.push(setArray); */
             let winningShotArray = ['Winning Shots'];
@@ -330,6 +400,14 @@ export class MatchService {
             sampleArray.push(longAwayArray);
             sampleArray.push(netArray);
             sampleArray.push([]);
+            let heatMapArray = ['heat map']
+            sampleArray.push(heatMapArray);
+            sampleArray.push(['shot type', 'Quadrant 1', 'Quadrant 2', 'Quadrant 3', 'Quadrant 4']);
+            sampleArray.push(smashQuadrantArray);
+            sampleArray.push(dropQuadrantArray);
+            sampleArray.push(floaterQuadrantArray);
+            sampleArray.push(serveQuadrantArray);
+            sampleArray.push([]);
         })
         console.log(sampleArray);
         return sampleArray;
@@ -344,13 +422,13 @@ export class MatchService {
             ["Engine", "$100", "1", "30/20/2016"],
             ["Totals", "=SUM(B2:B4)", "=SUM(C2:C4)", "=MAX(D2:D4)"]
         ]; */
-        // this.http.post('http://localhost:8080/', { title: matchId, content: JSON.stringify(content)}).subscribe((data) => {
-        //     console.log(data);
-        // })
-
-        this.http.post('https://frozen-sea-76181.herokuapp.com/', { title: matchId, content: JSON.stringify(content)}).subscribe((data) => {
+        this.http.post('http://localhost:8080/', { title: matchId, content: JSON.stringify(content)}).subscribe((data) => {
             console.log(data);
         })
+
+        // this.http.post('https://frozen-sea-76181.herokuapp.com/', { title: matchId, content: JSON.stringify(content)}).subscribe((data) => {
+        //     console.log(data);
+        // })
     }
 
     saveAction(matchId: string, recordedAction: IAction, generatedKey: string) {
