@@ -33,6 +33,8 @@ export interface IWinningShotTypes {
     dropQuadrant: IQuadrantTypes;
     floaterQuadrant: IQuadrantTypes;
     serveQuadrant: IQuadrantTypes;
+    foreHand: number;
+    backHand: number;
 }
 
 export interface IQuadrantTypes {

@@ -39,6 +39,8 @@ export class MatchService {
                                 drop: 0,
                                 floater: 0,
                                 serve: 0,
+                                foreHand: 0,
+                                backHand: 0,
                                 smashQuadrant: {
                                     quadrant1: 0,
                                     quadrant2: 0,
@@ -85,7 +87,7 @@ export class MatchService {
                                 [sessionKey]: {
                                     ...pointDetails[player.playerId][sessionKey],
                                     winningShots: pointDetails[player.playerId][sessionKey].winningShots > -1 ? pointDetails[player.playerId][sessionKey].winningShots + 1 : 1,
-                                    winningShotTypes: this.getUpdatedWinningShotTypes(pointDetails[player.playerId][sessionKey].winningShotTypes, session.pointSubType, session.quadrant)
+                                    winningShotTypes: this.getUpdatedWinningShotTypes(pointDetails[player.playerId][sessionKey].winningShotTypes, session.pointSubType, session.quadrant, session.hand)
                                 }
                             }
                             break;
@@ -143,7 +145,7 @@ export class MatchService {
         return updated;
     }
 
-    getUpdatedWinningShotTypes(currentValue, pointSubType, quadrant = 0) {
+    getUpdatedWinningShotTypes(currentValue, pointSubType, quadrant = 0, pointHandType) {
         let updated = { };
         switch(pointSubType) {
             case WINNINGPOINTTYPE.SMASH:
@@ -158,6 +160,16 @@ export class MatchService {
                 break;
             case WINNINGPOINTTYPE.SERVE:
                 updated = {...currentValue, serve: currentValue.serve + 1, serveQuadrant: this.getUpdatedQuadrant(currentValue.serveQuadrant, quadrant) };
+                break;
+        }
+        switch(pointHandType) {
+            case 'Forehand': {
+                updated = {...updated, foreHand: currentValue.foreHand + 1}
+            }
+            case 'Backhand': {
+                updated = {...updated, backHand: currentValue.backHand + 1}
+            }
+            default:
                 break;
         }
         return updated;
@@ -319,6 +331,8 @@ export class MatchService {
             let sideAwayArray = ['Side Away'];
             let longAwayArray = ['Long Away'];
             let netArray = ['Net'];
+            let foreHandArray = ['ForeHand'];
+            let backHandArray = ['BackHand'];
             /* let smashQuadrantOneArray = ['Quadrant 1'];
             let smashQuadrantTwoArray = ['Quadrant 2'];
             let smashQuadrantThreeArray = ['Quadrant 3'];
@@ -340,6 +354,8 @@ export class MatchService {
                 sideAwayArray.push(String(session.unforcedErrorTypes.sideAway));
                 longAwayArray.push(String(session.unforcedErrorTypes.longAway));
                 netArray.push(String(session.unforcedErrorTypes.net));
+                foreHandArray.push(String(session.winningShotTypes.foreHand));
+                backHandArray.push(String(session.winningShotTypes.backHand));
                 if(session.winningShotTypes) {
                     Object.keys(session.winningShotTypes).forEach((shotType) => {
                         switch(shotType) {
@@ -399,6 +415,11 @@ export class MatchService {
             sampleArray.push(sideAwayArray);
             sampleArray.push(longAwayArray);
             sampleArray.push(netArray);
+            sampleArray.push([]);
+            let handTypeArray = ['Hand'];
+            sampleArray.push(handTypeArray.concat(setArray));
+            sampleArray.push(foreHandArray);
+            sampleArray.push(backHandArray);
             sampleArray.push([]);
             let heatMapArray = ['heat map']
             sampleArray.push(heatMapArray);
