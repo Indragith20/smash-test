@@ -3,6 +3,12 @@
     <ion-title>
       Player Selection
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToHome()">
+        <ion-icon name="home"></ion-icon>
+        Home
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -43,7 +49,8 @@
           </ion-grid>
 
           <div class="bottom-container">
-            <ion-button class="ion-text-center" color="primary" (click)="finalizePlayers()">Proceed</ion-button>
+            <ion-button class="ion-text-center" color="primary" [disabled]="!playerForm.valid"
+              (click)="finalizePlayers()">Proceed</ion-button>
           </div>
         </ion-card-content>
       </ion-card>

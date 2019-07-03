@@ -319,119 +319,118 @@ export class MatchService {
 
     formatData(matchDetails: IMatchInterface) {
         const sampleArray = [];
-        matchDetails.players.forEach((player) => {
-            sampleArray.push([player.playerName]);
-            let setArray = [];
-            let smashArray = ['Smash'];
-            let dropArray = ['Drop'];
-            let floaterArray = ['Floater'];
-            let winningServeArray = ['Serve'];
-            let serviceNetArray = ['Net'];
-            let serviceFoulServeArray = ['Foul Serve'];
-            let sideAwayArray = ['Side Away'];
-            let longAwayArray = ['Long Away'];
-            let netArray = ['Net'];
-            let foreHandArray = ['ForeHand'];
-            let backHandArray = ['BackHand'];
-            /* let smashQuadrantOneArray = ['Quadrant 1'];
-            let smashQuadrantTwoArray = ['Quadrant 2'];
-            let smashQuadrantThreeArray = ['Quadrant 3'];
-            let smashQuadrantFourArray = ['Quadrant 4'];
-            smashArr = [smash , 10, 11 ,12, 13] */
-            let smashQuadrantArray = ['smash', 0, 0, 0, 0];
-            let dropQuadrantArray = ['drop', 0, 0, 0, 0];
-            let floaterQuadrantArray = ['floater', 0, 0, 0, 0];
-            let serveQuadrantArray = ['serve', 0, 0, 0, 0];
-            Object.keys(matchDetails.pointDetails[player.playerId]).map((sessionKey, index) => {
-                let session = matchDetails.pointDetails[player.playerId][sessionKey];
-                setArray.push(`Set ${index + 1}`);
-                smashArray.push(String(session.winningShotTypes.smash));
-                dropArray.push(String(session.winningShotTypes.drop));
-                floaterArray.push(String(session.winningShotTypes.floater));
-                winningServeArray.push(String(session.winningShotTypes.serve));
-                serviceNetArray.push(String(session.serviceErrorTypes.net));
-                serviceFoulServeArray.push(String(session.serviceErrorTypes.foulServe));
-                sideAwayArray.push(String(session.unforcedErrorTypes.sideAway));
-                longAwayArray.push(String(session.unforcedErrorTypes.longAway));
-                netArray.push(String(session.unforcedErrorTypes.net));
-                foreHandArray.push(String(session.winningShotTypes.foreHand));
-                backHandArray.push(String(session.winningShotTypes.backHand));
-                if(session.winningShotTypes) {
-                    Object.keys(session.winningShotTypes).forEach((shotType) => {
-                        switch(shotType) {
-                            case 'smashQuadrant': {
-                                smashQuadrantArray.forEach((shotcount, index) => {
-                                    if(index !== 0) {
-                                        smashQuadrantArray[index] = Number(smashQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
-                                    }
-                                });
-                                break;
+        if(matchDetails && matchDetails.players && matchDetails.pointDetails) {
+            matchDetails.players.forEach((player) => {
+                sampleArray.push([player.playerName]);
+                let setArray = [];
+                let smashArray = ['Smash'];
+                let dropArray = ['Drop'];
+                let floaterArray = ['Floater'];
+                let winningServeArray = ['Serve'];
+                let serviceNetArray = ['Net'];
+                let serviceFoulServeArray = ['Foul Serve'];
+                let sideAwayArray = ['Side Away'];
+                let longAwayArray = ['Long Away'];
+                let netArray = ['Net'];
+                let foreHandArray = ['ForeHand'];
+                let backHandArray = ['BackHand'];
+                let smashQuadrantArray = ['smash', 0, 0, 0, 0];
+                let dropQuadrantArray = ['drop', 0, 0, 0, 0];
+                let floaterQuadrantArray = ['floater', 0, 0, 0, 0];
+                let serveQuadrantArray = ['serve', 0, 0, 0, 0];
+                Object.keys(matchDetails.pointDetails[player.playerId]).map((sessionKey, index) => {
+                    let session = matchDetails.pointDetails[player.playerId][sessionKey];
+                    setArray.push(`Set ${index + 1}`);
+                    smashArray.push(String(session.winningShotTypes.smash));
+                    dropArray.push(String(session.winningShotTypes.drop));
+                    floaterArray.push(String(session.winningShotTypes.floater));
+                    winningServeArray.push(String(session.winningShotTypes.serve));
+                    serviceNetArray.push(String(session.serviceErrorTypes.net));
+                    serviceFoulServeArray.push(String(session.serviceErrorTypes.foulServe));
+                    sideAwayArray.push(String(session.unforcedErrorTypes.sideAway));
+                    longAwayArray.push(String(session.unforcedErrorTypes.longAway));
+                    netArray.push(String(session.unforcedErrorTypes.net));
+                    foreHandArray.push(String(session.winningShotTypes.foreHand));
+                    backHandArray.push(String(session.winningShotTypes.backHand));
+                    if(session.winningShotTypes) {
+                        Object.keys(session.winningShotTypes).forEach((shotType) => {
+                            switch(shotType) {
+                                case 'smashQuadrant': {
+                                    smashQuadrantArray.forEach((shotcount, index) => {
+                                        if(index !== 0) {
+                                            smashQuadrantArray[index] = Number(smashQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
+                                        }
+                                    });
+                                    break;
+                                }
+                                case 'dropQuadrant': {
+                                    dropQuadrantArray.forEach((shotcount, index) => {
+                                        if(index !== 0) {
+                                            dropQuadrantArray[index] = Number(dropQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
+                                        }
+                                    });
+                                    break;
+                                }
+                                case 'floaterQuadrant': {
+                                    floaterQuadrantArray.forEach((shotcount, index) => {
+                                        if(index !== 0) {
+                                            floaterQuadrantArray[index] = Number(floaterQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
+                                        }
+                                    });
+                                    break;
+                                }
+                                case 'serveQuadrant': {
+                                    serveQuadrantArray.forEach((shotcount, index) => {
+                                        if(index !== 0) {
+                                            serveQuadrantArray[index] = Number(serveQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
+                                        }
+                                    });
+                                    break;
+                                }
                             }
-                            case 'dropQuadrant': {
-                                dropQuadrantArray.forEach((shotcount, index) => {
-                                    if(index !== 0) {
-                                        dropQuadrantArray[index] = Number(dropQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
-                                    }
-                                });
-                                break;
-                            }
-                            case 'floaterQuadrant': {
-                                floaterQuadrantArray.forEach((shotcount, index) => {
-                                    if(index !== 0) {
-                                        floaterQuadrantArray[index] = Number(floaterQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
-                                    }
-                                });
-                                break;
-                            }
-                            case 'serveQuadrant': {
-                                serveQuadrantArray.forEach((shotcount, index) => {
-                                    if(index !== 0) {
-                                        serveQuadrantArray[index] = Number(serveQuadrantArray[index]) + Number(session.winningShotTypes[shotType][`quadrant${index}`]);
-                                    }
-                                });
-                                break;
-                            }
-                        }
-                    })
-                }
-                
-                
+                        })
+                    }
+                    
+                    
+                })
+                /* sampleArray.push(setArray); */
+                let winningShotArray = ['Winning Shots'];
+                sampleArray.push(winningShotArray.concat(setArray));
+                sampleArray.push(smashArray);
+                sampleArray.push(dropArray);
+                sampleArray.push(floaterArray);
+                sampleArray.push(winningServeArray);
+                sampleArray.push([]);
+                let serviceErrorArray = ['Service Error'];
+                sampleArray.push(serviceErrorArray.concat(setArray));
+                sampleArray.push(serviceNetArray);
+                sampleArray.push(serviceFoulServeArray);
+                sampleArray.push([]);
+                let unforcedErrorArray = ['UnForced Error'];
+                sampleArray.push(unforcedErrorArray.concat(setArray));
+                sampleArray.push(sideAwayArray);
+                sampleArray.push(longAwayArray);
+                sampleArray.push(netArray);
+                sampleArray.push([]);
+                let handTypeArray = ['Hand'];
+                sampleArray.push(handTypeArray.concat(setArray));
+                sampleArray.push(foreHandArray);
+                sampleArray.push(backHandArray);
+                sampleArray.push([]);
+                let heatMapArray = ['heat map']
+                sampleArray.push(heatMapArray);
+                sampleArray.push(['shot type', 'Quadrant 1', 'Quadrant 2', 'Quadrant 3', 'Quadrant 4']);
+                sampleArray.push(smashQuadrantArray);
+                sampleArray.push(dropQuadrantArray);
+                sampleArray.push(floaterQuadrantArray);
+                sampleArray.push(serveQuadrantArray);
+                sampleArray.push([]);
             })
-            /* sampleArray.push(setArray); */
-            let winningShotArray = ['Winning Shots'];
-            sampleArray.push(winningShotArray.concat(setArray));
-            sampleArray.push(smashArray);
-            sampleArray.push(dropArray);
-            sampleArray.push(floaterArray);
-            sampleArray.push(winningServeArray);
-            sampleArray.push([]);
-            let serviceErrorArray = ['Service Error'];
-            sampleArray.push(serviceErrorArray.concat(setArray));
-            sampleArray.push(serviceNetArray);
-            sampleArray.push(serviceFoulServeArray);
-            sampleArray.push([]);
-            let unforcedErrorArray = ['UnForced Error'];
-            sampleArray.push(unforcedErrorArray.concat(setArray));
-            sampleArray.push(sideAwayArray);
-            sampleArray.push(longAwayArray);
-            sampleArray.push(netArray);
-            sampleArray.push([]);
-            let handTypeArray = ['Hand'];
-            sampleArray.push(handTypeArray.concat(setArray));
-            sampleArray.push(foreHandArray);
-            sampleArray.push(backHandArray);
-            sampleArray.push([]);
-            let heatMapArray = ['heat map']
-            sampleArray.push(heatMapArray);
-            sampleArray.push(['shot type', 'Quadrant 1', 'Quadrant 2', 'Quadrant 3', 'Quadrant 4']);
-            sampleArray.push(smashQuadrantArray);
-            sampleArray.push(dropQuadrantArray);
-            sampleArray.push(floaterQuadrantArray);
-            sampleArray.push(serveQuadrantArray);
-            sampleArray.push([]);
-        })
-        console.log(sampleArray);
-        return sampleArray;
+            console.log(sampleArray);
+            return sampleArray;
+    
+        }
+        return [];
     }
 
     exportAsExcel(matchId: string) {

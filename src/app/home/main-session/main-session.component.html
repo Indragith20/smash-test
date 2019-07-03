@@ -23,7 +23,7 @@
     </ion-button>
   </ion-buttons>
 </div>
-<div class="action-container" [ngClass]="{'active-session': disableStartButton, 'hold-session': !disableStartButton}" 
+<div class="middle-container" [ngClass]="{'active-session': disableStartButton, 'hold-session': !disableStartButton}" 
   *ngIf="playersList && playersList.length > 0">
   <ion-text>{{playersList[0].playerName}}</ion-text>
   <ion-chip>
@@ -31,7 +31,7 @@
   </ion-chip>
   <ion-text>{{playersList[1].playerName}}</ion-text>
 </div>
-<ion-content>
+<ion-content no-padding no-margin>
 
   <div class="empty-class">
       <ion-card>
@@ -109,7 +109,7 @@
     <ion-button (click)="recordAction()" color="warning" [disabled]="!this.selectedPlayer">
         <ion-ripple-effect></ion-ripple-effect>Record Action
     </ion-button>
-    <ion-button size="small" color="dark">
+    <ion-button size="small" color="dark" (click)="completeMatch()">
        Finish
     </ion-button>
   </div>

@@ -12,6 +12,16 @@
     background-color: lightgrey;
     margin-bottom: 10px;
 }
+
+.middle-container {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid grey;
+    background-color: lightgrey;
+}
  
 .bottom-container {
     display: flex;
@@ -43,7 +53,9 @@
 
 ion-card {
     width: 100vw;
-    height: 80vh;
+    height: 90vh;
+    margin: 0px;
+    padding: 0px;
 }
 
 .empty-class {
@@ -77,4 +89,9 @@ ion-segment {
 .hold-session {
     background-color: goldenrod;
     color: black;
+}
+
+ion-chip {
+    background-color: white;
+    font-weight: bold;
 }

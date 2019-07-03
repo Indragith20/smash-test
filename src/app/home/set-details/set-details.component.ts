@@ -47,6 +47,10 @@ export class SetDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['home/main-session/' +this.selectedMatch]);
   }
 
+  goToHome() {
+    this.router.navigate(['home/match-select'], { replaceUrl: true });
+  }
+
   ngOnDestroy() {
     this.routeSubscription.unsubscribe();
   }

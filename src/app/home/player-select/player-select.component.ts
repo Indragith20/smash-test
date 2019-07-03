@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { stringify } from '@angular/compiler/src/util';
 import { AlertController } from '@ionic/angular';
 import { MatchService } from 'src/app/services/match.service';
@@ -19,7 +19,7 @@ export class PlayerSelectComponent implements OnInit {
   selectedAction: string;
 
   get PlayerArrayForm() {
-    return this.playerForm.get('players')
+    return (this.playerForm.get('players') as FormArray);
   }
 
   constructor(private router: Router, private route: ActivatedRoute, 
@@ -45,7 +45,7 @@ export class PlayerSelectComponent implements OnInit {
     [1, 2].map(() => {
       const newFormGroup = this.fb.group({
         playerId: '',
-        playerName: ''
+        playerName: ['', Validators.required]
       });
       (this.playerForm.get('players') as FormArray).push(newFormGroup);
     })
@@ -57,18 +57,19 @@ export class PlayerSelectComponent implements OnInit {
     console.log(this.playerForm.value);
     const playerDetails = this.playerForm.get('players').value;
     if(playerDetails && playerDetails.length > 0) {
-      /* const modifiedToss: IToss = {
-        wonby: playerDetails[this.selectedIndex].playerId,
-        choosenAction: this.selectedAction
-      } */
-      const modifiedPlayerList = playerDetails.map((player) => {
-        if(!player.playerId) {
-          return { ...player, playerId: uuid()}
-        }
-        return player;
-      })
-      this.matchService.savePlayersList(modifiedPlayerList, this.selectedMatch);
-      this.goToStartSession();
+      if((playerDetails[0].playerId === '' && playerDetails[1].playerId === '') ||
+          (playerDetails[0].playerId !== playerDetails[1].playerId)) {
+        const modifiedPlayerList = playerDetails.map((player) => {
+          if(!player.playerId) {
+            return { ...player, playerId: uuid()}
+          }
+          return player;
+        })
+        this.matchService.savePlayersList(modifiedPlayerList, this.selectedMatch);
+        this.goToStartSession();
+      } else {
+        this.presentCommonAlert();
+      }
     } else {
       this.presentCommonAlert();
     }
@@ -82,7 +83,7 @@ export class PlayerSelectComponent implements OnInit {
   }
 
   goToStartSession() {
-    this.router.navigate(['home/set-details/' + this.selectedMatch]);
+    this.router.navigate(['home/set-details/' + this.selectedMatch], {replaceUrl: true});
   }
 
    async presentAlertRadio() {
@@ -126,7 +127,7 @@ export class PlayerSelectComponent implements OnInit {
 
   async presentCommonAlert() {
     const alert = await this.alertController.create({
-      header: 'Select who won the toss',
+      header: 'Player Id should be either empty or unique',
       buttons: [
         {
           text: 'Ok',
@@ -140,6 +141,7 @@ export class PlayerSelectComponent implements OnInit {
     await alert.present();
   }
 
-
-
+  goToHome() {
+    this.router.navigate(['home/match-select'], { replaceUrl: true });
+  }
 }

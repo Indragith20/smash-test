@@ -83,3 +83,8 @@ export interface IAction {
 export interface IMainMatchDetails {
     [key: string]: IMatchInterface;
 }
+
+export interface IPointDisplayDetails {
+    playerOne: number;
+    playerTwo: number;
+}

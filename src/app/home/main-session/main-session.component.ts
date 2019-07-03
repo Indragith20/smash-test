@@ -3,7 +3,7 @@ import { SHOTTYPE } from 'src/app/constants/shotypes';
 import { WINNINGPOINTTYPE, UNFORCEDERRORPOINTTYPE, SERVICEERRORPOINTTYPE } from 'src/app/constants/pointtype';
 import { HANDTYPE } from 'src/app/constants/handtype';
 import { MatchService } from 'src/app/services/match.service';
-import { IPlayerDetails, IAction } from 'src/app/interfaces/match.interface';
+import { IPlayerDetails, IAction, IToss, IPointDisplayDetails } from 'src/app/interfaces/match.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ToastController, AlertController } from '@ionic/angular';
@@ -34,9 +34,10 @@ export class MainSessionComponent implements OnInit {
   setDetails: string;
   disableStartButton: boolean = false;
   generatedKey: string;
-  pointDisplayDetails: any;
+  pointDisplayDetails: IPointDisplayDetails;
+  tossDetails: IToss;
 
-  constructor(private matchService: MatchService, private route: ActivatedRoute,
+  constructor(public matchService: MatchService, private route: ActivatedRoute,
        private router: Router, private toastController: ToastController, private alertController: AlertController) { }
 
   ngOnInit() {
@@ -51,6 +52,7 @@ export class MainSessionComponent implements OnInit {
     if(this.matchService.matchDetails && this.selectedMatch) {
       if(this.matchService.matchDetails[this.selectedMatch].players && this.matchService.matchDetails[this.selectedMatch].players.length > 0) {
         this.playersList = this.matchService.matchDetails[this.selectedMatch].players;
+        this.tossDetails = this.matchService.matchDetails[this.selectedMatch].toss;
         if(this.matchService.matchDetails[this.selectedMatch].session) {
           const keys = Object.keys(this.matchService.matchDetails[this.selectedMatch].session);
           if(keys.length > 0) {
@@ -172,6 +174,29 @@ export class MainSessionComponent implements OnInit {
     this.resetDetails();
   }
 
+  async completeSetAlert() {
+    const alert = await this.alertController.create({
+      header: 'Are you sure to end this set ?',
+      buttons: [
+        {
+          text: 'No',
+          handler: (data) => {
+            console.log('Confirm Ok', data);
+          }
+        },
+        {
+          text: 'Yes',
+          handler: (data) => {
+            console.log('Confirm Ok', data);
+            this.endSession();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   async presentCommonAlert() {
     const alert = await this.alertController.create({
       header: 'Please check whether the sesison started and player has been selected',
@@ -212,6 +237,11 @@ export class MainSessionComponent implements OnInit {
 
   goToRecordedSession() {
     this.router.navigate(['home/recorded-session/' +this.selectedMatch]);
+  }
+
+  completeMatch() {
+    this.matchService.exportAsExcel(this.selectedMatch);
+    this.router.navigate(['home/match-select'], { replaceUrl: true });
   }
 
   ngOnDestroy() {
