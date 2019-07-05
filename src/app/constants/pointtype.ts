@@ -8,7 +8,8 @@ export enum WINNINGPOINTTYPE {
 export enum UNFORCEDERRORPOINTTYPE {
    SIDEAWAY = 'Side Away',
    LONGAWAY = 'Long Away',
-   NET = 'Net'
+   NET = 'Net',
+   MISS = 'Miss'
 }
 
 export enum SERVICEERRORPOINTTYPE {

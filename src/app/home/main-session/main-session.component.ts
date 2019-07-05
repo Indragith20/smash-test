@@ -3,7 +3,7 @@ import { SHOTTYPE } from 'src/app/constants/shotypes';
 import { WINNINGPOINTTYPE, UNFORCEDERRORPOINTTYPE, SERVICEERRORPOINTTYPE } from 'src/app/constants/pointtype';
 import { HANDTYPE } from 'src/app/constants/handtype';
 import { MatchService } from 'src/app/services/match.service';
-import { IPlayerDetails, IAction, IToss, IPointDisplayDetails } from 'src/app/interfaces/match.interface';
+import { IPlayerDetails, IAction, IToss, IPointDisplayDetails, ISessionDetails } from 'src/app/interfaces/match.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ToastController, AlertController } from '@ionic/angular';
@@ -22,7 +22,7 @@ export class MainSessionComponent implements OnInit {
   pointMainTypes: string[] = [SHOTTYPE.WINNING_SHOT, SHOTTYPE.SERVICE_ERROR, SHOTTYPE.UNFORCED_ERROR];
   pointTypes: any[] = [];
   winningPointTypes: string[] = [WINNINGPOINTTYPE.DROP, WINNINGPOINTTYPE.FLOATER, WINNINGPOINTTYPE.SERVE, WINNINGPOINTTYPE.SMASH];
-  unForcedErrorTypes: string[] = [UNFORCEDERRORPOINTTYPE.LONGAWAY, UNFORCEDERRORPOINTTYPE.NET, UNFORCEDERRORPOINTTYPE.SIDEAWAY];
+  unForcedErrorTypes: string[] = [UNFORCEDERRORPOINTTYPE.LONGAWAY, UNFORCEDERRORPOINTTYPE.NET, UNFORCEDERRORPOINTTYPE.SIDEAWAY, UNFORCEDERRORPOINTTYPE.MISS];
   serviceErorTypes: string[] = [SERVICEERRORPOINTTYPE.FOULSERVE, SERVICEERRORPOINTTYPE.NET];
   handTypes: string[] = [HANDTYPE.FOREHAND, HANDTYPE.BACKHAND]
   quadrants: any[] = [];
@@ -91,14 +91,14 @@ export class MainSessionComponent implements OnInit {
         this.showHandType = false;
         this.showPointTypes = true;
         this.selectedHandType = '';
-        this.pointTypes = this.unForcedErrorTypes.map((type) => ({ selected: false, type}));;
+        this.pointTypes = this.serviceErorTypes.map((type) => ({ selected: false, type}));;
         break;
       }
       case SHOTTYPE.UNFORCED_ERROR: {
         this.showHandType = false;
         this.showPointTypes = true;
         this.selectedHandType = '';
-        this.pointTypes = this.serviceErorTypes.map((type) => ({ selected: false, type}));
+        this.pointTypes = this.unForcedErrorTypes.map((type) => ({ selected: false, type}));
         break;
       }
       default:
@@ -222,6 +222,12 @@ export class MainSessionComponent implements OnInit {
 
   endSession() {
     this.disableStartButton = false;
+    this.pointDisplayDetails = this.matchService.getUpdatedPointDetails(this.selectedMatch, this.playersList[0].playerId, this.playersList[1].playerId, this.generatedKey);
+    const modifiedSession: ISessionDetails = {
+      [this.playersList[0].playerName]: this.pointDisplayDetails.playerOne,
+      [this.playersList[1].playerName]: this.pointDisplayDetails.playerTwo
+    };
+    this.matchService.recordSessionDetails(modifiedSession, this.selectedMatch, this.generatedKey);
     this.presentToast('Session Ended');
   }
 
@@ -236,6 +242,12 @@ export class MainSessionComponent implements OnInit {
   }
 
   goToRecordedSession() {
+    this.pointDisplayDetails = this.matchService.getUpdatedPointDetails(this.selectedMatch, this.playersList[0].playerId, this.playersList[1].playerId, this.generatedKey);
+    const modifiedSession: ISessionDetails = {
+      [this.playersList[0].playerName]: this.pointDisplayDetails.playerOne,
+      [this.playersList[1].playerName]: this.pointDisplayDetails.playerTwo
+    };
+    this.matchService.recordSessionDetails(modifiedSession, this.selectedMatch, this.generatedKey);
     this.router.navigate(['home/recorded-session/' +this.selectedMatch]);
   }
 

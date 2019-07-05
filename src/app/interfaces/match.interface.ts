@@ -4,6 +4,15 @@ export interface IMatchInterface {
     toss?: IToss;
     session?: ISession;
     pointDetails?: IPointDetails;
+    sessionDetails?: ISessionDetailsKey;
+}
+
+export interface ISessionDetailsKey {
+    [key: string]: ISessionDetails;
+}
+
+export interface ISessionDetails {
+    [key: string]: number;
 }
 
 export interface IPointDetails {
@@ -53,6 +62,7 @@ export interface IUnforcedErrorTypes {
     sideAway: number;
     longAway: number;
     net: number;
+    miss: number;
 }
 
 export interface IPlayerDetails {
